@@ -48,6 +48,7 @@ public class Dictionary {
     private final Path filepath;
     private String DICTIONARIES_FILENAME = ".medialab";
     private final Set<String> dictionary;
+
     Dictionary(String book_id) throws IOException, InterruptedException,
             HttpErrorException, InvalidRangeException, UndersizeException,
             UnbalancedException {
@@ -65,15 +66,15 @@ public class Dictionary {
             this.save_dictionary();
         }
         else {
-            this.load_dictionary_words();
+            this.load_dictionary();
             this.validate_dictionary();
         }
 
     }
+
     public Set<String> getDictionary() {
         return this.dictionary;
     }
-
 
     private String get_book_description() throws IOException,
             InterruptedException, HttpErrorException {
@@ -165,10 +166,11 @@ public class Dictionary {
         String[] words = description.split("\\W+");
         for (String word: words) {
             if (word.length() >= 6) {
-                this.dictionary.add(word);
+                this.dictionary.add(word.toUpperCase());
             }
         }
     }
+
     private void validate_dictionary() throws UndersizeException,
             InvalidRangeException, UnbalancedException {
         /**
@@ -206,6 +208,7 @@ public class Dictionary {
 
         }
     }
+
     private void save_dictionary() throws IOException {
         /**
          * Saves the dictionary into a file.
@@ -234,13 +237,12 @@ public class Dictionary {
         try (PrintWriter writer = new PrintWriter(
                 new BufferedWriter(new FileWriter(dictionary_file)))) {
             for (String word : this.dictionary) {
-                System.out.println(word);
                 writer.println(word);
             }
         }
     }
 
-    public void load_dictionary_words() throws IOException {
+    public void load_dictionary() throws IOException {
         /**
          * Loads a list of words to the dictionary from
          * a provided filepath.
@@ -254,7 +256,7 @@ public class Dictionary {
                 new FileReader(dictionary_file))) {
             String line;
             while ((line = bufReader.readLine()) != null) {
-                this.dictionary.add(line);
+                this.dictionary.add(line.toUpperCase());
             }
         }
     }
